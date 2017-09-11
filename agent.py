@@ -18,13 +18,12 @@ class LearningAgent(Agent):
         self.Q = dict()          # Create a Q-table which will be a dictionary of tuples
         self.epsilon = epsilon   # Random exploration factor
         self.alpha = alpha       # Learning factor
-		
-		###########
+
+        ###########
         ## TO DO ##
         ###########
         # Set any additional class parameters as needed
         self.trial = 0
-		
 
     def reset(self, destination=None, testing=False):
         """ The reset function is called at the beginning of each trial.
@@ -40,6 +39,7 @@ class LearningAgent(Agent):
         # Update epsilon using a decay function of your choice
         # Update additional class parameters as needed
         # If 'testing' is True, set epsilon and alpha to 0
+
         self.trial += 1
         
         if testing:
@@ -50,8 +50,6 @@ class LearningAgent(Agent):
             self.epsilon = self.epsilon - 0.05
 
         return None
-		
-		  
 
     def build_state(self):
         """ The build_state function is called when the agent requests data from the 
@@ -73,7 +71,7 @@ class LearningAgent(Agent):
         # With the hand-engineered features, this learning process gets entirely negated.
         
         # Set 'state' as a tuple of relevant data for the agent        
-        state = (waypoint, inputs['light'], inputs['left'], inputs['right'], inputs['oncoming'])
+        state = (waypoint, inputs['light'], inputs['left'], inputs['oncoming'])
         self.createQ(state)
 
         return state
@@ -103,7 +101,7 @@ class LearningAgent(Agent):
             elif maxQ == Qvalue:
                 actions.append(action)
 
-        return maxQ, actions
+        return maxQ, actions 
 
 
     def createQ(self, state):
@@ -115,6 +113,7 @@ class LearningAgent(Agent):
         # When learning, check if the 'state' is not in the Q-table
         # If it is not, create a new dictionary for that state
         #   Then, for each action available, set the initial Q-value to 0.0
+
         if self.learning and state not in self.Q.keys():
             self.Q[state] = {'left':0.0, 'right':0.0, 'forward':0.0, None:0.0}
 
@@ -199,7 +198,7 @@ def run():
     #   learning   - set to True to force the driving agent to use Q-learning
     #    * epsilon - continuous value for the exploration factor, default is 1
     #    * alpha   - continuous value for the learning rate, default is 0.5
-    agent = env.create_agent(LearningAgent, learning=True)
+    agent = env.create_agent(LearningAgent, learning=True, epsilon=5, alpha=0.1)
     
     ##############
     # Follow the driving agent
@@ -214,14 +213,14 @@ def run():
     #   display      - set to False to disable the GUI if PyGame is enabled
     #   log_metrics  - set to True to log trial and simulation results to /logs
     #   optimized    - set to True to change the default log file name
-    sim = Simulator(env, log_metrics=True, update_delay=0.01)
+    sim = Simulator(env, log_metrics=True, update_delay=0.01, optimized=True)
     
     ##############
     # Run the simulator
     # Flags:
     #   tolerance  - epsilon tolerance before beginning testing, default is 0.05 
     #   n_test     - discrete number of testing trials to perform, default is 0
-    sim.run(n_test=20)
+    sim.run(n_test=10, tolerance=0.01)
 
 
 if __name__ == '__main__':
